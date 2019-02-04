@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+        .clockInBox{
+            vertical-align: top;
+            width: 300px;
+            display: inline-block;
+         
+            text-align: center;
+        }
+        .records{
+            vertical-align: top;
+            width: 800px;
+            display: inline-block;
+       
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Company Name</a>
+            </div>
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Clock In/Out</a></li>
+              <li><a href="/settings">Settings</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{current_user.first_name}} {{current_user.last_name}} </a></li>
+              <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+        <div class="clockInBox">
+            <h3>{{current_user.first_name}} {{current_user.last_name}}</h3>
+            {% if clocked.clock_out != NULL or clocked.clock_in == NULL %}
+            <a href="/clockin" type="button" class="btn btn-success">Clock In!</a>
+            {% else %}
+            <form action="/clockout" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <p><label for="time">Choose a clockout time: </label></p>
+                    <input id="time" type="time" name="time" value="">
+                </div>
+                <div class="form-group">
+                    <label for="date">Choose a clockout date: </label>
+                    <input id="date" type="date" name="date" value="">
+                </div>
+                <input type="hidden" name="user_id" value='{{ current_user.id }}'>
+                <input type="hidden" name="day_id" value='{{ clocked.id }}'>
+                <input type="submit" value="Submit Clock Out Time" class="btn btn-warning" style="margin: 2px">
+            </form>
+            {% if messages %}
+            {% for message in messages %}
+            {% if "clock" in message.tags %}
+            <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            <form action="/clockoutnow" method ="POST">
+              {% csrf_token %}
+              <input type="hidden" name="day_id" value='{{ clocked.id }}'>
+            <input type="submit" value="Clock Out Now" class="btn btn-warning" style="margin: 2px">
+            </form>
+            {% endif %}
+        </div>
+        <div class="records">
+            <h1>Clock Records</h1>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Clock-in</th>
+                  <th scope="col">Clock-out</th>
+                  <th scope="col">Time Spent</th>
+                  <th scope="col">Task Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for day in days reversed %}
+                <tr>
+                  <td>{{day.clock_in}}</td>
+                  {% if day.clock_out != NULL %}
+                  <td>{{day.clock_out}}</td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
+                  {% if day.hours != NULL%}
+                  <td>{{day.hours}} hours</td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
+                  <td>{{day.report.task}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+          </div>    
+    </div>
+</body>
+</html>

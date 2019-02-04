@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>View Daily Reports</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Company Name</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/toDash">Clock In/Out</a></li>
+                    <li class="active"><a href="/manage">Manage Employees</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{current_user.first_name}} {{current_user.last_name}} </a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+        <h2>{{this_user.first_name}} {{this_user.last_name}}'s Reports</h2>
+        <ul class="list-group">
+            {% for day in days reversed %}
+            <li class="list-group-item">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myDate{{day.id}}">{{day.date}}</button>
+
+                <div class="modal fade" id="myDate{{day.id}}" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">{{this_user.first_name}} {{this_user.last_name}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h1>What I did today</h1>
+                                <p>{{day.report.task}}</p>
+                                <h1>Challenges I encountered</h1>
+                                <p>{{ day.report.notes }}</p>
+                                <h1>What you can do to help me</h1>
+                                <p>{{day.report.assist}}</p>
+                                <h1>Day Records</h1>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Clock-in</th>
+                                            <th scope="col">Clock-out</th>
+                                            <th scope="col">Time Spent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{day.clock_in}}</td>
+                                            <td>{{day.clock_out}}</td>
+                                            <td>{{day.hours}} hours</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

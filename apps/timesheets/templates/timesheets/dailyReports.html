@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Daily Reports</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body style="margin: 5px">
+        <h2>Compose Your Daily Update</h2>
+        <form action="/update" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="task">What I did today:</label>
+                <input type="text" name="task" class="form-control" id="task">
+                *limit 85 characters
+            </div>
+            <div class="form-group">
+                <label for="notes">Challenges I encountered/General Notes:</label>
+                <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="assist">What you can do to help:</label>
+                <textarea class="form-control" name="assist" id="assist" rows="3"></textarea>
+            </div>
+            <input type="hidden" name="day_id" value='{{ day_id }}'>
+            <input type="submit" value="Submit!" class="text-primary" style="display: block; margin-top: 5px">
+        </form>
+        {% if messages %}
+        {% for message in messages %}
+        {% if "report" in message.tags %}
+        <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {{ message }}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+    </div>
+</body>
+</html>
